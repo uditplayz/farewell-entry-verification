@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>Party Pass Verification</title>
+
+  </head>
+  <body>
+    <h1>Party Pass Verification</h1>
+    <p>Enter your name:</p>
+    <input type="text" id="name">
+    <p>Enter password:</p>
+    <input type="password" id="password">
+    <br><br>
+    <button onclick="verify()">Verify</button>
+    <p id="message"></p>
+  </body>
+  <script src="https://apis.google.com/js/api.js"></script>
+
+  <script>
+    let attempts = 3;
+    let nameInput = document.querySelector("#name");
+    let passwordInput = document.querySelector("#password");
+    let message = document.querySelector("#message");
+
+    function verify() {
+      let name = nameInput.value;
+      let password = passwordInput.value;
+      if (password === "GG$farewell") {
+        message.innerHTML = "Access granted. Welcome to the party, " + name + "!";
+        logData(name);
+      } else {
+        attempts--;
+        if (attempts > 0) {
+          message.innerHTML = "Incorrect password. You have " + attempts + " attempts left.";
+        } else {
+          message.innerHTML = "Too many attempts. Access denied.";
+        }
+      }
+    }
+
+    function logData(name) {
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "/log", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({ name: name, ip: userIP }));
+    }
+
+    // Code to get user's IP address
+    let userIP;
+    fetch("https://api.ipify.org?format=json")
+      .then(response => response.json())
+      .then(data => {
+        userIP = data.ip;
+      });
+  </script>
+</html>
